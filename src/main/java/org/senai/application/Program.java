@@ -23,6 +23,7 @@ public class Program {
             System.out.println("3 - CADASTRAR TURMA");
             System.out.println("4 - CADASTRAR PROFESSOR NA TURMA");
             System.out.println("5 - CADASTRAR ALUNO NA TURMA");
+            System.out.println("6 - CONSULTAR ALUNO NA TURMA");
             c = sc.next().charAt(0);
 
             switch (c) {
@@ -234,23 +235,24 @@ public class Program {
     public static void consultarAlunoTurma() {
 
         Connection conexao = MySQLConnection.conexao();
-        String comando = "SELECT a.nome AS nome_aluno, t.nome AS nome_turma FROM aluno" +
-                " JOIN turma_has_aluno tha ON a.id_aluno = tha.id_aluno JOIN turma t ON tha.id_turma = t.id_turma";
+        String comando = "SELECT a.nome AS nome_aluno, t.nome AS nome_turma FROM aluno a " + // Adicionado alias 'a'
+                "JOIN turma_has_aluno tha ON a.id_aluno = tha.id_aluno " + // Adicionado espaço aqui
+                "JOIN turma t ON tha.id_turma = t.id_turma"; // Adicionado alias 't'
         try {
             Statement stmt = conexao.createStatement();
             ResultSet resultado = stmt.executeQuery(comando);
 
             while (resultado.next()) {
-
-                String nome_turma = resultado.getString("t.nome");
-                String nome_aluno = resultado.getString("a.nome");
+                // Acesso correto às colunas usando os aliases definidos
+                String nome_aluno = resultado.getString("nome_aluno");
+                String nome_turma = resultado.getString("nome_turma");
                 System.out.println("Nome do Aluno: " + nome_aluno);
-                System.out.println("Nome do Turma: " + nome_turma);
+                System.out.println("Nome da Turma: " + nome_turma);
+                System.out.println();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
     }
 }
 
