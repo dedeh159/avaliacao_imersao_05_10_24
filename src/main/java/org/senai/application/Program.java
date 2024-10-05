@@ -22,6 +22,7 @@ public class Program {
             System.out.println("2 - CADASTRAR PROFESSOR");
             System.out.println("3 - CADASTRAR TURMA");
             System.out.println("4 - CADASTRAR PROFESSOR NA TURMA");
+            System.out.println("5 - CADASTRAR ALUNO NA TURMA");
             c = sc.next().charAt(0);
 
             switch (c) {
@@ -36,6 +37,9 @@ public class Program {
                     break;
                 case '4':
                     cadastrarProfessorTurma();
+                    break;
+                case '5':
+                    cadastrarAlunoTurma();
                     break;
 
             }
@@ -106,7 +110,7 @@ public class Program {
         try {
             Statement stmt = conexao.createStatement();
             ResultSet resultado = stmt.executeQuery(comando);
-            System.out.println(resultado);
+
 
             while (resultado.next()) {
 
@@ -142,7 +146,6 @@ public class Program {
         try {
             Statement stmt = conexao.createStatement();
             ResultSet resultado = stmt.executeQuery(comando);
-            System.out.println(resultado);
 
             while (resultado.next()) {
 
@@ -172,6 +175,26 @@ public class Program {
         }
         System.out.println("Em qual turma deseja cadastrar?");
         int id_turma = sc.nextInt();
+    }
+
+    public static void cadastrarAlunoTurma() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Qual o ID do aluno que deseja cadastrar? ");
+        Connection conexao = MySQLConnection.conexao();
+        String comando = "SELECT * FROM aluno";
+        try {
+            Statement stmt = conexao.createStatement();
+            ResultSet resultado = stmt.executeQuery(comando);
+
+            while (resultado.next()) {
+
+                int id = resultado.getInt("id_aluno");
+                System.out.println("ID: " + id);
+                System.out.println("Nome: " + resultado.getString("nome"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 }
