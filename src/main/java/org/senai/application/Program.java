@@ -41,6 +41,9 @@ public class Program {
                 case '5':
                     cadastrarAlunoTurma();
                     break;
+                case '6':
+                    consultarAlunoTurma();
+                    break;
 
             }
 
@@ -191,6 +194,58 @@ public class Program {
                 int id = resultado.getInt("id_aluno");
                 System.out.println("ID: " + id);
                 System.out.println("Nome: " + resultado.getString("nome"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        int id_aluno = sc.nextInt();
+        System.out.println("Qual o ID da turma que deseja selecionar para esse aluno? ");
+
+        comando = "SELECT * FROM turma";
+        try {
+            Statement stmt = conexao.createStatement();
+            ResultSet resultado = stmt.executeQuery(comando);
+
+            while (resultado.next()) {
+
+                int id = resultado.getInt("id_turma");
+                System.out.println("ID: " + id);
+                System.out.println("Nome: " + resultado.getString("nome"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        int id_turma = sc.nextInt();
+
+        try {
+
+            String insertCommand = "INSERT INTO turma_has_aluno (id_aluno,id_turma) VALUES (?,?)";
+
+            PreparedStatement stmt = conexao.prepareStatement(insertCommand);
+            stmt.setInt(1, id_aluno);
+            stmt.setInt(2, id_turma);
+            stmt.executeUpdate();
+            conexao.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void consultarAlunoTurma() {
+
+        Connection conexao = MySQLConnection.conexao();
+        String comando = "SELECT a.nome AS nome_aluno, t.nome AS nome_turma FROM aluno" +
+                " JOIN turma_has_aluno tha ON a.id_aluno = tha.id_aluno JOIN turma t ON tha.id_turma = t.id_turma";
+        try {
+            Statement stmt = conexao.createStatement();
+            ResultSet resultado = stmt.executeQuery(comando);
+
+            while (resultado.next()) {
+
+                String nome_turma = resultado.getString("t.nome");
+                String nome_aluno = resultado.getString("a.nome");
+                System.out.println("Nome do Aluno: " + nome_aluno);
+                System.out.println("Nome do Turma: " + nome_turma);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
